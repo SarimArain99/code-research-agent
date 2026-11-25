@@ -27,6 +27,16 @@ Two modes:
   file open in the code viewer, “this file” means that file, and two buttons
   ask those two questions for it directly.
 
+**Auto Review (no key, no API calls):** the “Auto Review” button in the repo
+  bar scans the whole loaded repo by itself — unused files and exports, dead
+  functions, TODO/FIXME markers, hardcoded secrets, oversized files, and
+  missing package basics (test script, license, README). Every finding comes
+  with a `file:line` citation and a suggested fix, as a chat message with a
+  clickable Sources panel. It understands relative imports, `@/` path
+  aliases, package entry points, framework entries (Next.js pages/layouts/
+  routes), and files named in `package.json` scripts, so those are never
+  flagged as dead.
+
 ## Stack
 
 - Next.js 15 (App Router), TypeScript strict, Tailwind CSS 4, React 19

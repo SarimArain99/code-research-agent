@@ -29,7 +29,7 @@ function fileLines(index: RepoIndex, path: string): string[] {
   return f ? f.content.split("\n") : [];
 }
 
-function packageJson(index: RepoIndex): Record<string, unknown> | null {
+export function packageJson(index: RepoIndex): Record<string, unknown> | null {
   const f = index.files.find((x) => x.path === "package.json");
   if (!f) return null;
   try {
@@ -40,7 +40,7 @@ function packageJson(index: RepoIndex): Record<string, unknown> | null {
 }
 
 /** True when the file is the package entry point (main or exports "."). */
-function isPackageEntry(index: RepoIndex, targetPath: string): boolean {
+export function isPackageEntry(index: RepoIndex, targetPath: string): boolean {
   const pkg = packageJson(index);
   if (!pkg) return false;
   const norm = (v: unknown) => (typeof v === "string" ? v.replace(/^\.\//, "") : "");

@@ -108,6 +108,7 @@ export default function Home() {
   const [input, setInput] = useState("");
   const [asking, setAsking] = useState(false);
   const [askError, setAskError] = useState<string | null>(null);
+  const [reviewing, setReviewing] = useState(false);
   const [apiKey, setApiKey] = useState("");
   const [model, setModel] = useState<SupportedModel>("gemini-2.5-flash");
   const [settingsOpen, setSettingsOpen] = useState(false);
@@ -237,6 +238,38 @@ export default function Home() {
     },
     [repo, asking, apiKey, model, selectedFile],
   );
+
+  const runAutoReview = useCallback(async () => {
+    if (!repo || reviewing || asking) return;
+    setReviewing(true);
+    setAskError(null);
+    setMessages((prev) => [...prev, { role: "user", text: "Run an Auto Review of this repo." }]);
+    try {
+      const res = await fetch("/api/auto-review", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ repoId: repo.repoId }),
+      });
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error ?? "Auto Review could not run.");
+      setMessages((prev) => [
+        ...prev,
+        {
+          role: "assistant",
+          text: data.answer as string,
+          mode: data.mode as "agent" | "lexical",
+          steps: (data.steps ?? []) as Step[],
+          sources: (data.sources ?? []) as Source[],
+          note: (data.note as string | null) ?? null,
+          model: (data.model as string | null) ?? null,
+        },
+      ]);
+    } catch (err) {
+      setAskError(err instanceof Error ? err.message : "Auto Review could not run.");
+    } finally {
+      setReviewing(false);
+    }
+  }, [repo, reviewing, asking]);
 
   const saveSettings = () => {
     const key = keyDraft.trim();
@@ -438,6 +471,14 @@ export default function Home() {
                   className="text-copper-soft underline underline-offset-2 hover:text-paper"
                 >
                   Change repo
+                </button>
+                <button
+                  type="button"
+                  onClick={runAutoReview}
+                  disabled={reviewing || asking}
+                  className="rounded-full bg-copper px-3 py-1 text-xs font-semibold text-copper-ink transition hover:bg-copper-soft disabled:opacity-50"
+                >
+                  {reviewing ? "Reviewing…" : "Auto Review"}
                 </button>
               </div>
               {repo.truncated && (
