@@ -1,0 +1,105 @@
+/* Hallmark stamp: theme=copper-lens (custom) | genre=developer-tool | palette=ink #0E1116 + burnt copper #E07856 | fonts=Space Grotesk + Inter */
+/* Critique: dark premium developer tool; one copper accent; no gradients, no emoji, no invented content. Waivers: none. */
+@import "tailwindcss";
+
+@theme {
+  --color-ink: #0e1116;
+  --color-panel: #161b23;
+  --color-raised: #1c232e;
+  --color-line: #262e3a;
+  --color-paper: #ece9e2;
+  --color-muted: #9ba3ad;
+  --color-faint: #6b7280;
+  --color-copper: #e07856;
+  --color-copper-soft: #f2a488;
+  --color-copper-deep: #b85a3c;
+  --color-copper-ink: #20100a;
+  --color-code-amber: #d9a441;
+  --color-code-sky: #8fb8d8;
+  --color-code-green: #7fb98a;
+  --font-display: var(--font-grotesk), "Space Grotesk", sans-serif;
+  --font-sans: var(--font-inter), "Inter", sans-serif;
+  --font-mono: ui-monospace, "SF Mono", "Cascadia Code", Menlo, Consolas, monospace;
+}
+
+:root {
+  --ink: #0e1116;
+  --panel: #161b23;
+  --raised: #1c232e;
+  --line: #262e3a;
+  --paper: #ece9e2;
+  --muted: #9ba3ad;
+  --faint: #6b7280;
+  --copper: #e07856;
+  --copper-soft: #f2a488;
+  --copper-deep: #b85a3c;
+}
+
+html,
+body {
+  overflow-x: clip;
+}
+
+body {
+  background-color: var(--ink);
+  color: var(--paper);
+  font-family: var(--font-sans);
+}
+
+h1,
+h2,
+h3 {
+  overflow-wrap: break-word;
+  min-width: 0;
+}
+
+a,
+button,
+input,
+select,
+textarea,
+[tabindex] {
+  outline: none;
+}
+
+a:focus-visible,
+button:focus-visible,
+input:focus-visible,
+select:focus-visible,
+textarea:focus-visible,
+[tabindex]:focus-visible {
+  outline: 2px solid var(--copper-soft);
+  outline-offset: 2px;
+  border-radius: 4px;
+}
+
+::selection {
+  background-color: var(--copper-deep);
+  color: var(--paper);
+}
+
+.scroll-thin {
+  scrollbar-width: thin;
+  scrollbar-color: var(--line) transparent;
+}
+
+.scroll-thin::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+.scroll-thin::-webkit-scrollbar-thumb {
+  background-color: var(--line);
+  border-radius: 4px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms;
+    animation-iteration-count: 1;
+    transition-duration: 0.01ms;
+    scroll-behavior: auto;
+  }
+}
