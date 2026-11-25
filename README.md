@@ -19,7 +19,13 @@ Two modes:
 - **Lexical mode (no key):** the same questions are answered deterministically
   from keyword search over the indexed chunks, with the same `file:line`
   citations and Sources panel, labelled as lexical so nobody mistakes it for
-  an AI summary.
+  an AI summary. Lexical answers are short on purpose — a direct statement
+  first, then at most four one-line evidence bullets, never a dump of raw
+  code. “Where is X used?” is traced for real: it lists the files that
+  import X with the exact import line. “What does X do?” reports what the
+  file exports (plus the package description for the entry point). With a
+  file open in the code viewer, “this file” means that file, and two buttons
+  ask those two questions for it directly.
 
 ## Stack
 
@@ -107,9 +113,11 @@ short summary citing the same files.
   lost when the server restarts. There is no persistence, no auth, no sharing.
 - The agent answers only about the loaded repo. Asking with no repo loaded
   returns HTTP 404 and the UI refuses instead of guessing.
-- Lexical mode is keyword search: it finds matching snippets but does not
-  summarise, and ranking is by keyword overlap, so a very common word can
-  surface README hits above the definition site. Add a key for agent answers.
+- Lexical mode is keyword search plus deterministic tracing: usage and
+  “what does it do” questions are answered from real imports/exports, but
+  open-ended questions still rank by keyword overlap, so a very common word
+  can surface README hits above the definition site. Add a key for agent
+  answers.
 
 ## Design
 

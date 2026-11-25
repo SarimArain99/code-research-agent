@@ -208,7 +208,12 @@ export default function Home() {
         const res = await fetch("/api/ask", {
           method: "POST",
           headers,
-          body: JSON.stringify({ repoId: repo.repoId, question: q, model }),
+          body: JSON.stringify({
+            repoId: repo.repoId,
+            question: q,
+            model,
+            contextFile: selectedFile?.path,
+          }),
         });
         const data = await res.json();
         if (!res.ok) throw new Error(data.error ?? "The question could not be answered.");
@@ -230,7 +235,7 @@ export default function Home() {
         setAsking(false);
       }
     },
-    [repo, asking, apiKey, model],
+    [repo, asking, apiKey, model, selectedFile],
   );
 
   const saveSettings = () => {
@@ -621,6 +626,24 @@ export default function Home() {
                   {codeLines.length} lines
                   {selectedLine !== null ? `, showing line ${selectedLine}` : ""}
                 </p>
+                <div className="mt-2 flex flex-wrap gap-1.5">
+                  <button
+                    type="button"
+                    onClick={() => ask(`Where is ${selectedFile.path} used?`)}
+                    disabled={asking}
+                    className="rounded-full border border-line bg-ink px-2.5 py-1 text-xs text-copper-soft transition hover:border-copper disabled:opacity-50"
+                  >
+                    Where is this file used?
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => ask(`What does ${selectedFile.path} do?`)}
+                    disabled={asking}
+                    className="rounded-full border border-line bg-ink px-2.5 py-1 text-xs text-copper-soft transition hover:border-copper disabled:opacity-50"
+                  >
+                    What does this file do?
+                  </button>
+                </div>
               </>
             ) : (
               <p className="text-sm text-muted">

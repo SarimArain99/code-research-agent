@@ -14,6 +14,9 @@ const BodySchema = z.object({
     .min(1, "Ask a question first.")
     .max(2000),
   model: z.enum(SUPPORTED_MODELS).optional(),
+  // The file the user currently has open in the code viewer, so
+  // "this file" in a question resolves to it. null is accepted too.
+  contextFile: z.string().max(500).nullish(),
 });
 
 export async function POST(req: Request) {
@@ -37,6 +40,7 @@ export async function POST(req: Request) {
   }
 
   const model = parsed.data.model ?? DEFAULT_MODEL;
+  const contextFile = parsed.data.contextFile ?? undefined;
   const apiKey =
     req.headers.get("x-gemini-api-key")?.trim() || process.env.GEMINI_API_KEY?.trim() || "";
 
@@ -44,12 +48,12 @@ export async function POST(req: Request) {
   // with the deterministic lexical fallback (keyword search + citations),
   // never with a missing-key error. A key unlocks the Gemini agent.
   if (!apiKey) {
-    const result = await lexicalAnswer(index, parsed.data.question);
+    const result = await lexicalAnswer(index, parsed.data.question, contextFile);
     return NextResponse.json(result);
   }
 
   try {
-    const result = await runAgent(index, parsed.data.question, apiKey, model);
+    const result = await runAgent(index, parsed.data.question, apiKey, model, contextFile);
     return NextResponse.json(result);
   } catch (err) {
     if (err instanceof ApiKeyError) {
@@ -57,7 +61,7 @@ export async function POST(req: Request) {
     }
     // Any other agent failure falls back to lexical so the user still gets
     // a grounded answer instead of a dead end.
-    const fallback = await lexicalAnswer(index, parsed.data.question);
+    const fallback = await lexicalAnswer(index, parsed.data.question, contextFile);
     fallback.note =
       "The Gemini agent failed, so this is the lexical fallback answer built from keyword search.";
     return NextResponse.json(fallback);

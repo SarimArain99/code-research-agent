@@ -46,6 +46,7 @@ export async function runAgent(
   question: string,
   apiKey: string,
   model: SupportedModel,
+  contextFile?: string,
 ): Promise<AnswerResult> {
   const chatModel = new ChatGoogleGenerativeAI({
     apiKey,
@@ -53,10 +54,13 @@ export async function runAgent(
     temperature: 0,
   });
   const { tools, collectSources } = buildTools(index);
+  const systemPrompt = contextFile
+    ? `${SYSTEM_PROMPT}\n- The user currently has the file ${contextFile} open. When they say "this file", they mean ${contextFile}.`
+    : SYSTEM_PROMPT;
   const agent = createAgent({
     model: chatModel,
     tools,
-    systemPrompt: SYSTEM_PROMPT,
+    systemPrompt,
   });
 
   let result: Awaited<ReturnType<typeof agent.invoke>>;
@@ -100,7 +104,7 @@ export async function runAgent(
 
   if (!answer.trim()) {
     // The agent produced no text: fall back to the deterministic lexical answer.
-    const fallback = await lexicalAnswer(index, question);
+    const fallback = await lexicalAnswer(index, question, contextFile);
     return {
       ...fallback,
       note: "The agent returned no text, so this is the lexical fallback answer built from keyword search.",
