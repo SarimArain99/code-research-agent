@@ -256,8 +256,8 @@ export default function Home() {
   const codeLines = selectedFile ? selectedFile.content.split("\n") : [];
 
   return (
-    <div className="flex min-h-dvh flex-col">
-      <header className="flex items-center gap-3 border-b border-line bg-panel px-4 py-3">
+    <div className="flex h-dvh flex-col overflow-hidden">
+      <header className="flex shrink-0 items-center gap-3 border-b border-line bg-panel px-4 py-3">
         <LensIcon />
         <div className="min-w-0">
           <h1 className="font-display text-xl font-semibold leading-none tracking-tight">
@@ -287,7 +287,7 @@ export default function Home() {
         </div>
       </header>
 
-      <div className="flex gap-2 border-b border-line bg-panel px-4 py-2 md:hidden">
+      <div className="flex shrink-0 gap-2 border-b border-line bg-panel px-4 py-2 md:hidden">
         {(["files", "chat", "code"] as MobileTab[]).map((tab) => (
           <button
             key={tab}
@@ -303,15 +303,15 @@ export default function Home() {
         ))}
       </div>
 
-      <main className="grid flex-1 grid-cols-1 md:grid-cols-[260px_minmax(0,1fr)_minmax(0,420px)]">
+      <main className="grid min-h-0 flex-1 grid-cols-1 overflow-hidden md:grid-cols-[260px_minmax(0,1fr)_minmax(0,420px)]">
         {/* File explorer */}
         <aside
-          className={`flex-col border-r border-line bg-panel ${
+          className={`min-h-0 flex-col overflow-hidden border-r border-line bg-panel ${
             mobileTab === "files" ? "flex" : "hidden"
           } md:flex`}
           aria-label="File explorer"
         >
-          <div className="border-b border-line p-3">
+          <div className="shrink-0 border-b border-line p-3">
             {repo ? (
               <div>
                 <p className="truncate font-mono text-sm font-semibold text-paper">
@@ -368,11 +368,11 @@ export default function Home() {
 
         {/* Chat column */}
         <section
-          className={`min-w-0 flex-col ${mobileTab === "chat" ? "flex" : "hidden"} md:flex`}
+          className={`min-w-0 flex-col overflow-hidden ${mobileTab === "chat" ? "flex" : "hidden"} md:flex`}
           aria-label="Ask the repo"
         >
           {(showLoader || !repo) && (
-            <div className="border-b border-line bg-panel p-4">
+            <div className="shrink-0 border-b border-line bg-panel p-4">
               <form
                 onSubmit={(e) => {
                   e.preventDefault();
@@ -422,7 +422,7 @@ export default function Home() {
           )}
 
           {repo && !showLoader && (
-            <div className="border-b border-line bg-panel px-4 py-2.5">
+            <div className="shrink-0 border-b border-line bg-panel px-4 py-2.5">
               <div className="flex flex-wrap items-center gap-x-3 gap-y-1 text-sm">
                 <span className="font-mono font-semibold">{repo.owner}/{repo.repo}</span>
                 <span className="text-muted">{repo.chunkCount} chunks</span>
@@ -579,7 +579,7 @@ export default function Home() {
               e.preventDefault();
               ask(input);
             }}
-            className="border-t border-line bg-panel p-3"
+            className="shrink-0 border-t border-line bg-panel p-3"
           >
             <div className="flex gap-2">
               <label htmlFor="ask-input" className="sr-only">
@@ -608,12 +608,12 @@ export default function Home() {
 
         {/* Code viewer */}
         <section
-          className={`min-w-0 flex-col border-l border-line bg-ink ${
+          className={`min-w-0 flex-col overflow-hidden border-l border-line bg-ink ${
             mobileTab === "code" ? "flex" : "hidden"
           } md:flex`}
           aria-label="Code viewer"
         >
-          <div className="border-b border-line bg-panel px-4 py-2.5">
+          <div className="shrink-0 border-b border-line bg-panel px-4 py-2.5">
             {selectedFile ? (
               <>
                 <p className="truncate font-mono text-sm font-semibold">{selectedFile.path}</p>
